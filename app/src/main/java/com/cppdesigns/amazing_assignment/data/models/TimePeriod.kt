@@ -1,11 +1,11 @@
 package com.cppdesigns.amazing_assignment.data.models
 
 import com.google.gson.annotations.SerializedName
-import java.util.Date
+import java.time.LocalDateTime
 
 data class TimePeriod(
     @SerializedName("start")
-    val startTime: Date,
+    val startTime: LocalDateTime,
     @SerializedName("end")
-    val endTime: Date,
+    val endTime: LocalDateTime,
 )

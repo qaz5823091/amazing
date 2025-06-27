@@ -7,4 +7,5 @@ data class MainViewState(
     var timeText: String = "",
     var weeks: List<Pair<String, String>> = emptyList(),
     var page: Int = 0,
+    var timeTable: Map<String, List<Pair<String, Boolean>>> = emptyMap(),
 )

@@ -2,11 +2,12 @@ package com.cppdesigns.amazing_assignment.screen
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -45,10 +46,12 @@ fun MainScreen(mainViewModel: MainViewModel = MainViewModel()) {
     }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = { AppBar(
-            title = viewState.timeText,
-            onBack = mainViewModel::previousWeek,
-            onForward = mainViewModel::nextWeek)
+        topBar = {
+            AppBar(
+                title = viewState.timeText,
+                onBack = mainViewModel::previousWeek,
+                onForward = mainViewModel::nextWeek
+            )
         }
     ) { innerPadding ->
         LaunchedEffect(selectedIndex) {
@@ -59,11 +62,15 @@ fun MainScreen(mainViewModel: MainViewModel = MainViewModel()) {
         }
         Column(modifier = Modifier.padding(innerPadding)) {
             TabView(
+                pagerState = pagerState,
                 weeks = viewState.weeks,
                 selectedIndex = selectedIndex,
-                pagerState = pagerState
             )
-            TimeView(pagerState)
+            TimeView(
+                pagerState = pagerState,
+                weeks = viewState.weeks,
+                timeTable = viewState.timeTable,
+            )
         }
     }
 }
@@ -104,9 +111,9 @@ fun ForwardButton(onClick: () -> Unit) {
 
 @Composable
 fun TabView(
+    pagerState: PagerState,
     weeks: List<Pair<String, String>>,
     selectedIndex: MutableIntState,
-    pagerState: PagerState
 ) {
     val scrollScope = rememberCoroutineScope()
     ScrollableTabRow(selectedTabIndex = selectedIndex.intValue) {
@@ -126,23 +133,25 @@ fun TabView(
 }
 
 @Composable
-fun TimeView(pagerState: PagerState) {
-    val timeList = listOf(
-        "08:00",
-        "08:30",
-        "09:00",
-        "09:30",
-        "12:00",
-        "12:30",
-    )
+fun TimeView(
+    pagerState: PagerState,
+    weeks: List<Pair<String, String>>,
+    timeTable: Map<String, List<Pair<String, Boolean>>>
+) {
     HorizontalPager(state = pagerState) { page ->
-        Column {
-            Text(
-                text = "Page: ${page + 1}",
-                modifier = Modifier.fillMaxWidth()
-            )
-            timeList.forEach { time ->
-                TimeButton(time, true)
+        val week = weeks.elementAt(page).second
+        val list = timeTable.entries.firstOrNull() { item ->
+            item.key.contains(week)
+        }?.value
+        Column(
+            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+        ) {
+            if (list?.isNotEmpty() == true) {
+                list.forEach {
+                    TimeButton(it.first, it.second)
+                }
+            } else {
+                Text("No")
             }
         }
     }
