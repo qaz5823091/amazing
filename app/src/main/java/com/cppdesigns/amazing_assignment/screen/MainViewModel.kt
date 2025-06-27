@@ -1,6 +1,5 @@
 package com.cppdesigns.amazing_assignment.screen
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cppdesigns.amazing_assignment.data.ApiService
@@ -41,7 +40,12 @@ class MainViewModel(
             }
         }
         val page = _viewState.value.page
-        val now = LocalDateTime.now().plusDays(page * WEEK_COUNT.toLong())
+        val now = if(page == 0) {
+            LocalDateTime.now().plusDays(0)
+        } else {
+            val temp = LocalDateTime.now().plusDays(page * WEEK_COUNT.toLong())
+            temp.withHour(0).withMinute(0).withSecond(0).withNano(0)
+        }
         val end = now.plusDays(WEEK_COUNT.toLong())
         val nowText = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
         val endText = end.format(DateTimeFormatter.ofPattern("MM-dd"))

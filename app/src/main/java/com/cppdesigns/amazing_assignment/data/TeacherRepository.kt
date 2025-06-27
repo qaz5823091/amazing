@@ -1,6 +1,5 @@
 package com.cppdesigns.amazing_assignment.data
 
-import android.util.Log
 import com.cppdesigns.amazing_assignment.data.models.TeacherTime
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
