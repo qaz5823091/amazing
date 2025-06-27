@@ -159,18 +159,12 @@ fun TimeView(
 
 @Composable
 fun TimeButton(text: String, enabled: Boolean) {
-    var isPressed by remember {
-        mutableStateOf(false)
-    }
     ElevatedButton(
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-        onClick = { isPressed = !isPressed },
+        onClick = {},
         enabled = enabled,
         shape = RectangleShape,
-        colors = when (isPressed) {
-            true -> ButtonDefaults.buttonColors()
-            false -> ButtonDefaults.elevatedButtonColors()
-        }
+        colors = ButtonDefaults.buttonColors(),
     ) {
         Text(text)
     }
