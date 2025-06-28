@@ -79,6 +79,9 @@ class MainViewModel(
 
     private fun fetchTimeTable() {
         viewModelScope.launch {
+            _viewState.update {
+                it.copy(isLoading = true)
+            }
             val result = teacherRepository.getTimeTable(
                 teacherName = TEACHERS[_viewState.value.teacherIndex],
                 time = _viewState.value.time,
@@ -88,7 +91,10 @@ class MainViewModel(
             addTimeTable(result.bookedTime, isAvailable = false)
             sortTimeTable()
             _viewState.update {
-                it.copy(timeTable = _map)
+                it.copy(
+                    isLoading = false,
+                    timeTable = _map
+                )
             }
         }
     }
