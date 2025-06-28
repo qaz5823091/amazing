@@ -50,7 +50,7 @@ previousWeek 會往上一週呼叫，所以是 updateWeek(-1)，最小為第一�
 
 ## Demo
 ### 中文
-![demo](/demo/tw_screenshot.jpg)
+<img src="/demo/tw_screenshot.jpg" width="350px">
 
 ### 英文
-![demo](/demo/en_screenshot.jpg)
+<img src="/demo/en_screenshot.jpg" width="350px">
