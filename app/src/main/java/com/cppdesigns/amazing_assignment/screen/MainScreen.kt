@@ -80,6 +80,7 @@ fun MainScreen(
         }
         Column(modifier = Modifier.padding(innerPadding)) {
             TeacherSelection(
+                teachers = MainViewModel.TEACHERS,
                 onSelect = mainViewModel::selectTeacher
             )
             HorizontalDivider(
@@ -109,13 +110,9 @@ fun AppBar() {
 
 @Composable
 fun TeacherSelection(
-    onSelect: (String) -> Unit,
+    teachers: List<String>,
+    onSelect: (Int) -> Unit,
 ) {
-    val buttons = listOf(
-        "sakurashimone",
-        "kiki-fu",
-        "yunning"
-    )
     var selectedIndex by remember {
         mutableIntStateOf(0)
     }
@@ -127,12 +124,12 @@ fun TeacherSelection(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            itemsIndexed(buttons) { index, text ->
+            itemsIndexed(teachers) { index, text ->
                 val isSelected = selectedIndex == index;
                 Button(
                     onClick = {
                         selectedIndex = index
-                        onSelect(buttons[selectedIndex])
+                        onSelect(selectedIndex)
                     },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(

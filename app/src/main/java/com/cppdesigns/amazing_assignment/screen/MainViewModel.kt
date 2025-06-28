@@ -25,12 +25,12 @@ class MainViewModel(
     private var _map: MutableMap<String, MutableList<Pair<String, Boolean>>> = mutableMapOf()
 
     init {
-        selectTeacher("sakurashimone")
+        selectTeacher(0)
     }
 
-    fun selectTeacher(name: String) {
+    fun selectTeacher(index: Int) {
         _viewState.update {
-            it.copy(teacherName = name)
+            it.copy(teacherIndex = index)
         }
         updateWeek(0)
     }
@@ -80,7 +80,7 @@ class MainViewModel(
     private fun fetchTimeTable() {
         viewModelScope.launch {
             val result = teacherRepository.getTimeTable(
-                teacherName = _viewState.value.teacherName,
+                teacherName = TEACHERS[_viewState.value.teacherIndex],
                 time = _viewState.value.time,
             )
             _map = mutableMapOf()
@@ -123,5 +123,10 @@ class MainViewModel(
 
     companion object {
         private const val WEEK_COUNT: Int = 7
+        val TEACHERS: List<String> = listOf(
+            "sakurashimone",
+            "kiki-fu",
+            "yunning"
+        )
     }
 }
