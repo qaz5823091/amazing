@@ -26,6 +26,13 @@ class MainViewModel(
     private var _map: MutableMap<String, MutableList<Pair<String, Boolean>>> = mutableMapOf()
 
     init {
+        selectTeacher("sakurashimone")
+    }
+
+    fun selectTeacher(name: String) {
+        _viewState.update {
+            it.copy(teacherName = name)
+        }
         updateWeek(0)
     }
 
@@ -74,12 +81,12 @@ class MainViewModel(
     private fun fetchTimeTable() {
         viewModelScope.launch {
             val result = teacherRepository.getTimeTable(
-                teacherName = "sakurashimone",
+                teacherName = _viewState.value.teacherName,
                 time = _viewState.value.time,
             )
             _map = mutableMapOf()
-            addTimeTable(result.availableTime)
-            addTimeTable(result.bookedTime)
+            addTimeTable(result.availableTime, isAvailable = true)
+            addTimeTable(result.bookedTime, isAvailable = false)
             sortTimeTable()
             _viewState.update {
                 it.copy(timeTable = _map)
@@ -87,7 +94,7 @@ class MainViewModel(
         }
     }
 
-    private fun addTimeTable(periods: List<TimePeriod>) {
+    private fun addTimeTable(periods: List<TimePeriod>, isAvailable: Boolean) {
         periods.forEach { time ->
             val zoneId = ZoneId.systemDefault()
             var current = time.startTime.atZone(ZoneOffset.UTC).withZoneSameInstant(zoneId)
@@ -98,7 +105,7 @@ class MainViewModel(
                     _map[key] = mutableListOf()
                 }
                 val text = current.format(DateTimeFormatter.ofPattern("HH:mm"))
-                _map[key]?.add(Pair(text, true))
+                _map[key]?.add(Pair(text, isAvailable))
                 current = current.plusMinutes(30)
             }
         }

@@ -8,4 +8,5 @@ data class MainViewState(
     var weeks: List<Pair<String, String>> = emptyList(),
     var page: Int = 0,
     var timeTable: Map<String, List<Pair<String, Boolean>>> = emptyMap(),
+    var teacherName: String = "",
 )
