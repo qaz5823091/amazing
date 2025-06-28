@@ -2,7 +2,6 @@ package com.cppdesigns.amazing_assignment.screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cppdesigns.amazing_assignment.data.ApiService
 import com.cppdesigns.amazing_assignment.data.TeacherRepository
 import com.cppdesigns.amazing_assignment.data.models.TimePeriod
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +17,7 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 class MainViewModel(
-    private val teacherRepository: TeacherRepository = TeacherRepository(ApiService.instance())
+    private val teacherRepository: TeacherRepository
 ) : ViewModel() {
     private val _viewState = MutableStateFlow(MainViewState())
     val viewState: StateFlow<MainViewState> = _viewState.asStateFlow()

@@ -55,9 +55,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cppdesigns.amazing_assignment.R
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun MainScreen(mainViewModel: MainViewModel = MainViewModel()) {
+fun MainScreen(
+    mainViewModel: MainViewModel = koinViewModel()
+) {
     val viewState by mainViewModel.viewState.collectAsState()
     val pagerState = rememberPagerState(pageCount = { 7 })
     val selectedIndex = remember {
