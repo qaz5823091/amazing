@@ -1,35 +1,45 @@
 package com.cppdesigns.amazing_assignment
 
 import com.cppdesigns.amazing_assignment.data.ApiService
+import com.cppdesigns.amazing_assignment.data.TeacherRepository
 import com.cppdesigns.amazing_assignment.data.models.LocalDateTimeAdapter
 import com.cppdesigns.amazing_assignment.data.models.TeacherTime
 import com.cppdesigns.amazing_assignment.data.models.TimePeriod
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
-import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import java.time.LocalDateTime
 
-class TeacherTimeTest {
+class TeacherRepositoryTest {
     @MockK
     private lateinit var apiService: ApiService
+    private lateinit var teacherRepository: TeacherRepository
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        coEvery { apiService.searchTeacherTime(any(), any()) } returns ApiService.gson.fromJson(
+        teacherRepository = TeacherRepository(apiService)
+        coEvery {
+            apiService.searchTeacherTime(
+                "name",
+                "2025-06-29T07:30:00.000Z"
+            )
+        } returns ApiService.gson.fromJson(
             TestDataHelper.json,
             TeacherTime::class.java
         )
     }
 
     @Test
-    fun testSearchTeacherTime() = runTest {
-        val time = apiService.searchTeacherTime("name", "2025-06-29T07:30:00Z")
+    fun testGetTimeTable() = runTest {
+        val time = teacherRepository.getTimeTable(
+            teacherName = "name",
+            time = LocalDateTime.parse("2025-06-29T07:30:00Z", LocalDateTimeAdapter.formatter)
+        )
         assertEquals(
             9,
             time.availableTime.size,
