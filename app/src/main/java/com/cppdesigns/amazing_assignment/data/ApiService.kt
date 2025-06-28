@@ -20,11 +20,11 @@ interface ApiService {
 
     companion object {
         private var apiService: ApiService? = null
-        private val gson: Gson = GsonBuilder()
+        val gson: Gson = GsonBuilder()
             .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeAdapter())
             .create()
-        fun instance(): ApiService = apiService ?: Retrofit.Builder()
-            .baseUrl("https://en.amazingtalker.com/v1/guest/")
+        fun instance(url: String? = null): ApiService = apiService ?: Retrofit.Builder()
+            .baseUrl(url ?: "https://en.amazingtalker.com/v1/guest/")
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
             .create(ApiService::class.java)

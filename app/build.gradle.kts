@@ -63,6 +63,12 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     // koin
     implementation(libs.koin.androidx.compose)
+    // mockk
+    testImplementation(libs.mockk)
+    // mock web server
+    testImplementation(libs.mockwebserver)
+    // coroutine test
+    testImplementation(libs.kotlinx.coroutines.test)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

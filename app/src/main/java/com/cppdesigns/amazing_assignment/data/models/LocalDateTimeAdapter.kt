@@ -11,8 +11,6 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class LocalDateTimeAdapter: JsonSerializer<LocalDateTime>, JsonDeserializer<LocalDateTime> {
-    private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
-
     override fun serialize(
         src: LocalDateTime?,
         typeOfSrc: Type?,
@@ -27,5 +25,9 @@ class LocalDateTimeAdapter: JsonSerializer<LocalDateTime>, JsonDeserializer<Loca
         context: JsonDeserializationContext?
     ): LocalDateTime {
         return LocalDateTime.parse(json?.asString, formatter)
+    }
+
+    companion object {
+        val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
     }
 }
