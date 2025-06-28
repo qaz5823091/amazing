@@ -1,5 +1,6 @@
 package com.cppdesigns.amazing_assignment.screen
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,6 +32,9 @@ import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableIntState
@@ -42,7 +46,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -142,6 +148,8 @@ fun TeacherSelection(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun TimeSelection(
     title: String,
@@ -153,24 +161,36 @@ fun TimeSelection(
     selectedIndex: MutableIntState,
     timeTable: Map<String, List<Pair<String, Boolean>>>
 ) {
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+        rememberTopAppBarState()
+    )
     Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
         Text("選擇時間")
-        DateSelectionBar(
-            title = title,
-            isFirstPage = isFirstPage,
-            onBack = onBack,
-            onForward = onForward,
-        )
-        TabView(
-            pagerState = pagerState,
-            weeks = weeks,
-            selectedIndex = selectedIndex,
-        )
-        TimeView(
-            pagerState = pagerState,
-            weeks = weeks,
-            timeTable = timeTable,
-        )
+        Scaffold(
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+            topBar = {
+                DateSelectionBar(
+                    title = title,
+                    isFirstPage = isFirstPage,
+                    scrollBehavior = scrollBehavior,
+                    onBack = onBack,
+                    onForward = onForward,
+                )
+            },
+        ) { innerPadding ->
+            Column(modifier = Modifier.padding(innerPadding)) {
+                TabView(
+                    pagerState = pagerState,
+                    weeks = weeks,
+                    selectedIndex = selectedIndex,
+                )
+                TimeView(
+                    pagerState = pagerState,
+                    weeks = weeks,
+                    timeTable = timeTable,
+                )
+            }
+        }
     }
 }
 
@@ -179,6 +199,7 @@ fun TimeSelection(
 fun DateSelectionBar(
     title: String,
     isFirstPage: Boolean,
+    scrollBehavior: TopAppBarScrollBehavior,
     onBack: () -> Unit,
     onForward: () -> Unit
 ) {
@@ -197,6 +218,11 @@ fun DateSelectionBar(
             )
         },
         actions = { ForwardButton(onForward) },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Transparent,           // <--- add this
+            scrolledContainerColor = Color.Transparent
+        ),
+        scrollBehavior = scrollBehavior,
     )
 }
 
@@ -265,10 +291,10 @@ fun TimeView(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = when(list?.isNotEmpty() == true) {
+            verticalArrangement = when (list?.isNotEmpty() == true) {
                 true -> Arrangement.Top
                 false -> Arrangement.Center
-            } ,
+            },
         ) {
             if (list?.isNotEmpty() == true) {
                 list.forEach {
