@@ -9,8 +9,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 class MainViewModel(
@@ -40,10 +43,10 @@ class MainViewModel(
             }
         }
         val page = _viewState.value.page
-        val now = if(page == 0) {
-            LocalDateTime.now().plusDays(0)
+        val now = if (page == 0) {
+            LocalDateTime.now(ZoneOffset.UTC).plusDays(0)
         } else {
-            val temp = LocalDateTime.now().plusDays(page * WEEK_COUNT.toLong())
+            val temp = LocalDateTime.now(ZoneOffset.UTC).plusDays(page * WEEK_COUNT.toLong())
             temp.withHour(0).withMinute(0).withSecond(0).withNano(0)
         }
         val end = now.plusDays(WEEK_COUNT.toLong())
@@ -53,10 +56,11 @@ class MainViewModel(
             val current = now.plusDays(it.toLong())
             Pair(current.dayOfWeek.toString(), current.dayOfMonth.toString())
         }
+        val offset = ZoneId.systemDefault().rules.getOffset(Instant.now())
         _viewState.update {
             it.copy(
                 time = now,
-                timeText = "$nowText - $endText",
+                timeText = "$nowText - $endText\n$offset",
                 weeks = list
             )
         }
@@ -66,33 +70,35 @@ class MainViewModel(
     private fun fetchTimeTable() {
         viewModelScope.launch {
             val result = teacherRepository.getTimeTable(
-                teacherName = "kiki-fu",
+                teacherName = "sakurashimone",
                 time = _viewState.value.time,
             )
             val map: MutableMap<String, MutableList<Pair<String, Boolean>>> = mutableMapOf()
             result.availableTime.forEach { time ->
-                var current = time.startTime
-                while (current < time.endTime) {
+                val zoneId = ZoneId.systemDefault()
+                var current = time.startTime.atZone(ZoneOffset.UTC).withZoneSameInstant(zoneId)
+                val endTime = time.endTime.atZone(ZoneOffset.UTC).withZoneSameInstant(zoneId)
+                while (current < endTime) {
                     val key = current.format(DateTimeFormatter.ofPattern("dd"))
                     if (!map.containsKey(key)) {
-                       map[key] = mutableListOf()
-                    } else {
-                        val text = current.format(DateTimeFormatter.ofPattern("HH:mm"))
-                        map[key]?.add(Pair(text, true))
+                        map[key] = mutableListOf()
                     }
+                    val text = current.format(DateTimeFormatter.ofPattern("HH:mm"))
+                    map[key]?.add(Pair(text, true))
                     current = current.plusMinutes(30)
                 }
             }
             result.bookedTime.forEach { time ->
-                var current = time.startTime
-                while (current < time.endTime) {
+                val zoneId = ZoneId.systemDefault()
+                var current = time.startTime.atZone(ZoneOffset.UTC).withZoneSameInstant(zoneId)
+                val endTime = time.endTime.atZone(ZoneOffset.UTC).withZoneSameInstant(zoneId)
+                while (current < endTime) {
                     val key = current.format(DateTimeFormatter.ofPattern("dd"))
                     if (!map.containsKey(key)) {
                         map[key] = mutableListOf()
-                    } else {
-                        val text = current.format(DateTimeFormatter.ofPattern("HH:mm"))
-                        map[key]?.add(Pair(text, false))
                     }
+                    val text = current.format(DateTimeFormatter.ofPattern("HH:mm"))
+                    map[key]?.add(Pair(text, false))
                     current = current.plusMinutes(30)
                 }
             }
