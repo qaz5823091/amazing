@@ -1,10 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">amazing-assignment</string>
     <string name="title">Amazing Assignment</string>
     <string name="selection_teacher">Select a Teacher</string>
     <string name="selection_time">Select a Available Time</string>
-    <string name="weeks_monday">Monday</string>
     <string name="weeks_tuesday">Tuesday</string>
+    <string name="weeks_monday">Monday</string>
     <string name="weeks_wednesday">Wednesday</string>
     <string name="weeks_thursday">Thursday</string>
     <string name="weeks_friday">Friday</string>

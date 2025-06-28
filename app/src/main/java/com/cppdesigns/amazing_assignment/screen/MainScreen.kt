@@ -49,9 +49,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.cppdesigns.amazing_assignment.R
 import kotlinx.coroutines.launch
 
 @Composable
@@ -98,7 +100,7 @@ fun MainScreen(mainViewModel: MainViewModel = MainViewModel()) {
 @Composable
 fun AppBar() {
     TopAppBar(
-        title = { Text("Amazing Assignment", textAlign = TextAlign.Center) },
+        title = { Text(stringResource(id = R.string.title), textAlign = TextAlign.Center) },
     )
 }
 
@@ -115,7 +117,7 @@ fun TeacherSelection(
         mutableIntStateOf(0)
     }
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-        Text("選擇老師")
+        Text(stringResource(id = R.string.selection_teacher))
         LazyVerticalGrid(
             columns = GridCells.Adaptive(150.dp),
             contentPadding = PaddingValues(16.dp),
@@ -165,7 +167,7 @@ fun TimeSelection(
         rememberTopAppBarState()
     )
     Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-        Text("選擇時間")
+        Text(stringResource(id = R.string.selection_time))
         Scaffold(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
@@ -261,6 +263,7 @@ fun TabView(
     val scrollScope = rememberCoroutineScope()
     ScrollableTabRow(selectedTabIndex = selectedIndex.intValue) {
         weeks.forEachIndexed { index, value ->
+            val weekOfDay = stringResource(id = weekOfDayText(value.first))
             Tab(
                 selected = selectedIndex.intValue == index,
                 onClick = {
@@ -269,9 +272,22 @@ fun TabView(
                         pagerState.scrollToPage(index)
                     }
                 },
-                text = { Text(text = "${value.first}\n${value.second}") }
+                text = { Text(text = "$weekOfDay\n${value.second}") }
             )
         }
+    }
+}
+
+private fun weekOfDayText(text: String): Int {
+    return when (text.lowercase()) {
+        "monday" -> R.string.weeks_monday
+        "tuesday" -> R.string.weeks_tuesday
+        "wednesday" -> R.string.weeks_wednesday
+        "thursday" -> R.string.weeks_thursday
+        "friday" -> R.string.weeks_friday
+        "saturday" -> R.string.weeks_saturday
+        "sunday" -> R.string.weeks_sunday
+        else -> R.string.weeks_sunday
     }
 }
 
@@ -301,7 +317,7 @@ fun TimeView(
                     TimeButton(it.first, it.second)
                 }
             } else {
-                Text("沒有可選擇的時間")
+                Text(stringResource(id = R.string.no_available_time))
             }
         }
     }

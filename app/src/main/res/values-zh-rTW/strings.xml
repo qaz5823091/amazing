@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">amazing-assignment</string>
+    <string name="title">Amazing 作業</string>
+    <string name="selection_teacher">選擇老師</string>
+    <string name="selection_time">選擇時間</string>
+    <string name="weeks_tuesday">週二</string>
+    <string name="weeks_monday">週一</string>
+    <string name="weeks_wednesday">週三</string>
+    <string name="weeks_thursday">週四</string>
+    <string name="weeks_friday">週五</string>
+    <string name="weeks_saturday">週六</string>
+    <string name="weeks_sunday">週日</string>
+    <string name="no_available_time">沒有可選的時間</string>
+</resources>
