@@ -241,7 +241,7 @@ fun DateSelectionBar(
         },
         actions = { ForwardButton(onForward) },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Transparent,           // <--- add this
+            containerColor = Color.Transparent,
             scrolledContainerColor = Color.Transparent
         ),
         scrollBehavior = scrollBehavior,
@@ -319,7 +319,7 @@ fun TimeView(
 ) {
     HorizontalPager(state = pagerState) { page ->
         val week = weeks.elementAt(page).second
-        val list = timeTable.entries.firstOrNull() { item ->
+        val list = timeTable.entries.firstOrNull { item ->
             item.key.contains(week)
         }?.value
         Column(
